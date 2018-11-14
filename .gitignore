@@ -374,3 +374,6 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# Our own files
+corpora/
