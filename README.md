@@ -2,9 +2,20 @@
 # IFT 6390 Project: Accent Classification
 ## How to structure python
 
-* [overall practice]https://docs.python-guide.org/writing/structure/
-* [what to install ]http://web.stanford.edu/class/cs224n/assignment1/index.html
-  * tldr version:
+* [overall practice](https://docs.python-guide.org/writing/structure/)
+* [what to install ](http://web.stanford.edu/class/cs224n/assignment1/index.html)
+
+  * TLDR Conda version:
+  ```
+  cd project
+  # check that you installed conda
+  conda create -n yourenv python=3.6
+  source activate /insert/yourenv/name       # Activate the virtual environment
+  pip install -r requirements.txt  # Install dependencies
+  # Work on the assignment for a while ...
+  source deactivate                       # Exit the virtual environment
+  ```
+  * tldr it also works version:
   ```
   cd assignment1
   sudo pip install virtualenv      # This may already be installed
@@ -14,7 +25,7 @@
   # Work on the assignment for a while ...
   deactivate                       # Exit the virtual environment
   ```
-* [how to tell other ppl what to install ]https://medium.com/python-pandemonium/better-python-dependency-and-package-management-b5d8ea29dff1
+* [how to tell other ppl what to install ](https://medium.com/python-pandemonium/better-python-dependency-and-package-management-b5d8ea29dff1)
 
 ## Administrative to-do's
 * Get everyone invited to and on this Git repo. For those new to Git, check out:
