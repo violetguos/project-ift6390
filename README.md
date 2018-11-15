@@ -7,12 +7,12 @@
   * tldr version:
   ```
   cd assignment1
-sudo pip install virtualenv      # This may already be installed
-virtualenv .env                  # Create a virtual environment
-source .env/bin/activate         # Activate the virtual environment
-pip install -r requirements.txt  # Install dependencies
-# Work on the assignment for a while ...
-deactivate                       # Exit the virtual environment
+  sudo pip install virtualenv      # This may already be installed
+  virtualenv .env                  # Create a virtual environment
+  source .env/bin/activate         # Activate the virtual environment
+  pip install -r requirements.txt  # Install dependencies
+  # Work on the assignment for a while ...
+  deactivate                       # Exit the virtual environment
   ```
 * [how to tell other ppl what to install ]https://medium.com/python-pandemonium/better-python-dependency-and-package-management-b5d8ea29dff1
 
