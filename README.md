@@ -1,5 +1,20 @@
 
 # IFT 6390 Project: Accent Classification
+## How to structure python
+
+* [overall practice]https://docs.python-guide.org/writing/structure/
+* [what to install ]http://web.stanford.edu/class/cs224n/assignment1/index.html
+  * tldr version:
+  ```
+  cd assignment1
+sudo pip install virtualenv      # This may already be installed
+virtualenv .env                  # Create a virtual environment
+source .env/bin/activate         # Activate the virtual environment
+pip install -r requirements.txt  # Install dependencies
+# Work on the assignment for a while ...
+deactivate                       # Exit the virtual environment
+  ```
+* [how to tell other ppl what to install ]https://medium.com/python-pandemonium/better-python-dependency-and-package-management-b5d8ea29dff1
 
 ## Administrative to-do's
 * Get everyone invited to and on this Git repo. For those new to Git, check out:
@@ -18,7 +33,7 @@
 Corpora need to have enough data (on the order of a few hours), and contain audio of only one speaker at a time (not conversations or interviews where we also hear the interviewer). If we find another corpus meeting these requirements for another English, we can add another class.
 
 ### Preprocess and clean the corpus data
-* We need to assemble recordings from Audio BNC consisting of single speakers. Look for tags such as "lecture" or "sermon". 
+* We need to assemble recordings from Audio BNC consisting of single speakers. Look for tags such as "lecture" or "sermon".
 * Audio BNC is in mono, while Librispeech is in stereo, so Librispeech needs to be downsampled to mono to match.
 * Both corpora need to be cut into clips (a minute each? Maybe less, we'll see). There are scripts to do this sort of thing in Praat and with other Python libraries.
 
