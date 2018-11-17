@@ -1,5 +1,5 @@
 ###########Ignore specific project files###########
-
+*.wav
 
 #########Latex############
 ## Core latex/pdflatex auxiliary files:

@@ -51,10 +51,12 @@ def get_mfcc():
     allWaves = glob.glob('*.wav')
 
     # hardcoded number for testing
-    for i in range(0, 2):
+    for i in range(len(allWaves)):
         (rate,sig) = wav.read(allWaves[i]) #(sys.argv[1] + "121_0.wav")
-        mfcc_feat = mfcc(sig,rate)
-        print("Saving MFCC text for {}\n".format(allWaves[i]))
+        mfcc_feat = mfcc(sig,rate, nfft=551)
+        #print(mfcc_feat.shape)
+        if i%100 == 0:
+            print("Saving MFCC text for {}\n".format(allWaves[i]))
         # to get file name without '.wav' extension
         # works for any file if you want no '.' (os.path.splitext(allWaves[i])[0])
         np.savetxt(sys.argv[2] + os.path.splitext(allWaves[i])[0] + '.txt', mfcc_feat, delimiter=",")

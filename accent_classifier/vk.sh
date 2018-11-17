@@ -8,6 +8,13 @@
 
 
 # !! always add the trailing `/` symbol!!!
-python mfcc_process.py /Users/vikuo/Documents/accent-classification-corpora/librispeech_preprocessed/ \
-/Users/vikuo/Documents/accent-classification-corpora/us_mfcc_coefs/ \
-/Users/vikuo/Documents/accent-classification-corpora/us_mfcc_plots/ \
+
+# MFCC for American
+#python mfcc_process.py /Users/vikuo/Documents/accent-classification-corpora/librispeech_preprocessed/ \
+#/Users/vikuo/Documents/accent-classification-corpora/us_mfcc_coefs/ \
+#/Users/vikuo/Documents/accent-classification-corpora/us_mfcc_plots/ \
+
+# MFCC for British
+python mfcc_process.py /Users/vikuo/Documents/accent-classification-corpora/librit_preprocessed/ \
+/Users/vikuo/Documents/accent-classification-corpora/brit_mfcc_coefs/ \
+/Users/vikuo/Documents/accent-classification-corpora/brit_mfcc_plots/ \
