@@ -39,6 +39,11 @@ def get_speaker_dict(input_dir, corpus):
 			speaker_files[speaker_id] = [file]
 	return speaker_files
 
+def downsample(audio, sample_rate):
+	# Downsamples an audio object to a given rate
+	audio = audio.set_frame_rate(sample_rate)
+	return audio
+
 def consolidate_speakers(input_dir, speaker_id, speaker_dict):
 	# Concatenates all files from specific speaker into one audio object.
 	file_list = speaker_dict[speaker_id]
@@ -60,6 +65,9 @@ def preprocess(input_dir, output_dir, length_in_sec, corpus):
 		#speaker_audio = remove_silence(speaker_audio)
 		# Downsample to mono
 		speaker_audio = stereo_to_mono(speaker_audio)
+		# Librit needs to be downsampled to 16k
+		if corpus == 'librit':
+			speaker_audio = downsample(speaker_audio, 16000)
 		# Split into clips of length
 		length = length_in_sec * 1000
 		audio_chunks = make_chunks(speaker_audio, length)
