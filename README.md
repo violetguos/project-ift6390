@@ -44,7 +44,6 @@ The collective Google Colab notebook is now [here](https://colab.research.google
 
 ### ~~Decide on accents and corpora to compare~~
 * For North American style English: [Librispeech](http://www.openslr.org/12/)
-* ~~For British English: [Audio BNC](http://www.phon.ox.ac.uk/AudioBNC)~~
 * Audio BNC did not end up working, so for British English, we assembled "Librit", a corpus of British audiobook narrators from [Librivox](https://librivox.org/) (actually the same source as Librispeech). Thanks to [RuthieG](https://golding.wordpress.com/home/other-british-readers-on-librivox/) for her list of British readers.
 
 Corpora need to have enough data (on the order of a few hours), and contain audio of only one speaker at a time (not conversations or interviews where we also hear the interviewer). If we find another corpus meeting these requirements for another English, we can add another class.
@@ -54,12 +53,12 @@ Corpora need to have enough data (on the order of a few hours), and contain audi
 * Both corpora are cut into clips (~~a minute each? Maybe less, we'll see~~ 20 seconds each). 
 
 ### Feature extraction
-For MFCC features:
-* Write a function that extracts MFCCs. There are existing functions for this, see [python speech features](https://python-speech-features.readthedocs.io/en/latest/) or [librosa](https://librosa.github.io/librosa/generated/librosa.feature.mfcc.html).
+~~For MFCC features:~~
+* ~~Write a function that extracts MFCCs using  [python speech features](https://python-speech-features.readthedocs.io/en/latest/).~~
 
-For F1, F2, F3 features:
-* We need to decide which frames in the audio are _[voiced](https://en.wikipedia.org/wiki/Voice_(phonetics))_ (and thus will have good formants to measure). Deshpande et al. do this heuristically by counting a frame as voiced if the [log energy](https://python-speech-features.readthedocs.io/en/latest/#python_speech_features.base.logfbank) is greater than or equal to -9.0 and if the [zero crossing rate](https://en.wikipedia.org/wiki/Zero_crossing) is between 1 and 45. There are ways to do this in Python and/or Praat.
-* Then we need to actually extract F1, F2, and F3 from each voiced frame. This is scriptable in Praat.
+~~For F1, F2, F3 features:~~
+* ~~Decide which frames in the audio are _[voiced](https://en.wikipedia.org/wiki/Voice_(phonetics))_ (and thus will have good formants to measure). Deshpande et al. do this heuristically by counting a frame as voiced if the [log energy](https://python-speech-features.readthedocs.io/en/latest/#python_speech_features.base.logfbank) is greater than or equal to -9.0 and if the [zero crossing rate](https://en.wikipedia.org/wiki/Zero_crossing) is between 1 and 45.~~
+* ~~Write a Praat script to extract F1, F2, and F3 from each voiced frame.~~
 
 For raw spectrogram features:
 * We should use [scipy's function](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.spectrogram.html) to get the spectrogram itself.
