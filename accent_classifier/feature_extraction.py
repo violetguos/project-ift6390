@@ -3,8 +3,6 @@ File containing feature extraction methods.
 Input should be the preprocessed version of the corpus.
 '''
 
-import argparse
-import os
 import subprocess
 import scipy.io.wavfile as wav
 import sys
@@ -17,9 +15,12 @@ matplotlib.use("TkAgg")
 # Vi Comment: if i don't call this line, matplotlib crashes and gives me a call
 # stack trace that triggers *literally and figuratively* me and my computer
 import matplotlib.pyplot as plt
+import pickle
 
 from python_speech_features import mfcc
 from python_speech_features import logfbank
+from scipy.io.wavfile import read
+from scipy import signal
 
 def plot_mfcc(mfcc_feat, title):
     '''
@@ -65,7 +66,28 @@ def extract_formants(input_dir, output_dir):
 			process.communicate()
 
 def extract_spectrogram(input_dir, output_dir):
-	pass
+	for i, filename in enumerate(os.listdir(input_dir)):
+		if filename.endswith('.wav'):
+			print('Getting spectrogram for {} ({} of {})'.format(filename, i, len(os.listdir(input_dir))))
+			filename_prefix = filename.split('.')[0]
+			input_file_path = os.path.join(input_dir, filename)
+			x_value = 0
+			sr_value = 0
+			sr_value, x_value = read(input_file_path)
+			img = 0
+
+			# Get the spectrogram
+			spectrum, specs, t, img = plt.specgram(x_value, NFFT=80, Fs=16000, noverlap=40)
+			plt.clf() # Clear plot - this is necessary!
+
+			# Dump to a dictionary
+			spect_dict ={}
+			spect_dict['img'] = img
+			spect_dict['t'] = t
+			spect_dict['specs'] = specs
+			spect_dict['spectrum'] = spectrum
+			with open(os.path.join(output_dir, '{}.pickle'.format(filename_prefix)), "wb" ) as jar:
+				pickle.dump(spect_dict ,jar,protocol=pickle.HIGHEST_PROTOCOL)
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Extract features from the corpus data.')

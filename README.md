@@ -1,5 +1,3 @@
-
-
 # IFT 6390 Project: Accent Classification
 ## How to structure python
 
@@ -30,6 +28,33 @@
 
 * Don't write [code that smells bad](https://en.wikipedia.org/wiki/Code_smell)!
 
+## How to run what we have so far
+
+### Installation
+The following packages are dependencies:
+* For preprocessing: [pydub](https://github.com/jiaaro/pydub)
+* For MFCC feature extraction: [python_speech_features](https://github.com/jameslyons/python_speech_features)
+* For formant feature extraction: [praat](http://www.fon.hum.uva.nl/praat/), which needs to be added to your system's path ([Mac](https://www.architectryan.com/2012/10/02/add-to-the-path-on-mac-os-x-mountain-lion/)/[Windows](https://www.itprotoday.com/cloud-computing/how-can-i-add-new-folder-my-system-path)/[Unix](https://stackoverflow.com/questions/14637979/how-to-permanently-set-path-on-linux-unix))
+* For spectrogram feature extraction: [matplotlib](https://matplotlib.org/)
+
+### Preprocessing
+
+The preprocessing methods can be found in `preprocessing.py`. They convert all corpus audio to segments of a given length, and sample everything to mono 16,000 KHz `.wav` files.
+
+To run the preprocessing, run:
+
+```python preprocessing.py [corpus] [input_dir] [output_dir] [segment length (in seconds)] ```
+
+Possible `[corpus]` arguments are: `librispeech`, `librit`.
+
+### Feature extraction
+
+The feature extraction methods can be found in `feature_extraction.py`.  To run feature extraction for a given feature, run:
+
+```python feature_extraction.py [feature type] [input_dir] [output_dir]```
+
+Possible `[feature_type]` arguments are: `mfcc`, `formants`, `spectrogram`.
+
 ## Administrative to-do's
 
 The collective Google Colab notebook is now [here](https://colab.research.google.com/drive/1ejfZhiqM3Wg4w9ofw4-ncoJzi-Aa8kje?fbclid=IwAR3AHejpp0D1Ky9oitURAzbRypzsPsExShGQzo5qzVftd5-w2naOkxp0cYU#scrollTo=d8wDXAOAbsUd). Test as you please! (Instructions on how to interact with Google Drive data coming.)
@@ -52,7 +77,7 @@ Corpora need to have enough data (on the order of a few hours), and contain audi
 * Both corpora are downsampled to mono audio.
 * Both corpora are cut into clips (~~a minute each? Maybe less, we'll see~~ 20 seconds each). 
 
-### Feature extraction
+### ~~Feature extraction~~
 ~~For MFCC features:~~
 * ~~Write a function that extracts MFCCs using  [python speech features](https://python-speech-features.readthedocs.io/en/latest/).~~
 
@@ -60,8 +85,8 @@ Corpora need to have enough data (on the order of a few hours), and contain audi
 * ~~Decide which frames in the audio are _[voiced](https://en.wikipedia.org/wiki/Voice_(phonetics))_ (and thus will have good formants to measure). Deshpande et al. do this heuristically by counting a frame as voiced if the [log energy](https://python-speech-features.readthedocs.io/en/latest/#python_speech_features.base.logfbank) is greater than or equal to -9.0 and if the [zero crossing rate](https://en.wikipedia.org/wiki/Zero_crossing) is between 1 and 45.~~
 * ~~Write a Praat script to extract F1, F2, and F3 from each voiced frame.~~
 
-For raw spectrogram features:
-* We should use [scipy's function](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.spectrogram.html) to get the spectrogram itself.
+~~For raw spectrogram features:~~
+* ~~Use [matplotlib's function](https://matplotlib.org/api/_as_gen/matplotlib.pyplot.specgram.html) to get the spectrogram itself.~~
 
 ### Network building
 We should use [Keras](https://keras.io/) because it's easy! First though, we should train a baseline SVM from sklearn.
