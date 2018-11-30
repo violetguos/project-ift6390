@@ -1,0 +1,152 @@
+num_classes = 2
+test_label = np.array((0,1)).reshape(1,2)
+
+activation="relu"
+
+model = Sequential()
+model.add(Conv2D(16, kernel_size=(4,4),activation='relu', input_shape=(201, 66,1),
+                 kernel_initializer=keras.initializers.glorot_normal(seed=None)))
+#model.add(BatchNormalization())
+
+model.add(MaxPooling2D(pool_size=(4,4), padding='SAME'))
+
+
+
+model.add(Conv2D(32, kernel_size=(4,4),strides=(1, 1), activation='relu', padding='SAME',
+                                 kernel_initializer=keras.initializers.glorot_normal(seed=None)))
+model.add(MaxPooling2D(pool_size=(2,2), padding='SAME'))
+model.add(BatchNormalization())
+
+model.add(Conv2D(32, kernel_size=(4,4),strides=(1, 1), activation='relu', padding='SAME',
+                                  kernel_initializer=keras.initializers.glorot_normal(seed=None)))
+model.add(MaxPooling2D(pool_size=(2,2), padding='SAME'))
+
+# model.add(Conv2D(32, kernel_size=(4,4),strides=(1, 1), activation='relu', padding='SAME',
+#                                   kernel_initializer=keras.initializers.glorot_normal(seed=None)))
+# model.add(MaxPooling2D(pool_size=(2,2), padding='SAME'))
+
+
+# model.add(Conv2D(32, kernel_size=(4,4),strides=(1, 1), activation='relu', padding='SAME',
+#                                   kernel_initializer=keras.initializers.glorot_normal(seed=None)))
+# model.add(BatchNormalization())
+
+
+# model.add(MaxPooling2D(pool_size=(4,4),  padding='SAME'))
+
+model.add(keras.layers.Dropout(0.5, noise_shape=None, seed=None))
+
+#model.add(Conv2D(128, kernel_size=(3,3),activation='relu'))
+model.add(Flatten())
+#model.add(Dense(50, activation='relu'))
+#model.add(Dense(64, activation='relu'))
+model.add(keras.layers.Dropout(0.5, noise_shape=None, seed=None))
+
+model.add(Dense(2, activation='softmax'))
+
+
+
+
+model.compile(loss=keras.losses.categorical_crossentropy,
+              optimizer=keras.optimizers.Nadam(lr = 0.001),
+              metrics=['accuracy'])
+
+
+
+model.summary()
+
+
+modelHist2 = model.fit(x_train, y_train, validation_data = (x_val, y_val),
+          batch_size=32, epochs=30, callbacks = callbacks_list)
+
+
+
+
+Layer (type)                 Output Shape              Param #
+=================================================================
+conv2d_37 (Conv2D)           (None, 198, 63, 16)       272
+_________________________________________________________________
+max_pooling2d_37 (MaxPooling (None, 50, 16, 16)        0
+_________________________________________________________________
+conv2d_38 (Conv2D)           (None, 50, 16, 32)        8224
+_________________________________________________________________
+max_pooling2d_38 (MaxPooling (None, 25, 8, 32)         0
+_________________________________________________________________
+batch_normalization_5 (Batch (None, 25, 8, 32)         128
+_________________________________________________________________
+conv2d_39 (Conv2D)           (None, 25, 8, 32)         16416
+_________________________________________________________________
+max_pooling2d_39 (MaxPooling (None, 13, 4, 32)         0
+_________________________________________________________________
+dropout_23 (Dropout)         (None, 13, 4, 32)         0
+_________________________________________________________________
+flatten_12 (Flatten)         (None, 1664)              0
+_________________________________________________________________
+dropout_24 (Dropout)         (None, 1664)              0
+_________________________________________________________________
+dense_18 (Dense)             (None, 2)                 3330
+=================================================================
+Total params: 28,370
+Trainable params: 28,306
+Non-trainable params: 64
+_________________________________________________________________
+Train on 22960 samples, validate on 2552 samples
+Epoch 1/30
+22960/22960 [==============================] - 24s 1ms/step - loss: 0.5280 - acc: 0.7683 - val_loss: 0.4736 - val_acc: 0.7708
+Epoch 2/30
+22960/22960 [==============================] - 20s 867us/step - loss: 0.4497 - acc: 0.7922 - val_loss: 0.4317 - val_acc: 0.8029
+Epoch 3/30
+22960/22960 [==============================] - 20s 868us/step - loss: 0.4261 - acc: 0.8034 - val_loss: 0.4153 - val_acc: 0.8068
+Epoch 4/30
+22960/22960 [==============================] - 20s 864us/step - loss: 0.4063 - acc: 0.8124 - val_loss: 0.3979 - val_acc: 0.8115
+Epoch 5/30
+22960/22960 [==============================] - 20s 856us/step - loss: 0.3923 - acc: 0.8193 - val_loss: 0.4103 - val_acc: 0.8041
+Epoch 6/30
+22960/22960 [==============================] - 20s 857us/step - loss: 0.3849 - acc: 0.8260 - val_loss: 0.3865 - val_acc: 0.8213
+Epoch 7/30
+22960/22960 [==============================] - 20s 867us/step - loss: 0.3756 - acc: 0.8336 - val_loss: 0.3767 - val_acc: 0.8182
+Epoch 8/30
+22960/22960 [==============================] - 20s 853us/step - loss: 0.3626 - acc: 0.8387 - val_loss: 0.3767 - val_acc: 0.8201
+Epoch 9/30
+22960/22960 [==============================] - 20s 859us/step - loss: 0.3567 - acc: 0.8406 - val_loss: 0.3611 - val_acc: 0.8295
+Epoch 10/30
+22960/22960 [==============================] - 20s 861us/step - loss: 0.3481 - acc: 0.8480 - val_loss: 0.3610 - val_acc: 0.8346
+Epoch 11/30
+22960/22960 [==============================] - 20s 864us/step - loss: 0.3453 - acc: 0.8508 - val_loss: 0.3671 - val_acc: 0.8366
+Epoch 12/30
+22960/22960 [==============================] - 20s 862us/step - loss: 0.3352 - acc: 0.8571 - val_loss: 0.3507 - val_acc: 0.8323
+Epoch 13/30
+22960/22960 [==============================] - 20s 858us/step - loss: 0.3294 - acc: 0.8571 - val_loss: 0.3422 - val_acc: 0.8538
+Epoch 14/30
+22960/22960 [==============================] - 20s 869us/step - loss: 0.3309 - acc: 0.8571 - val_loss: 0.3888 - val_acc: 0.8437
+Epoch 15/30
+22960/22960 [==============================] - 20s 878us/step - loss: 0.3202 - acc: 0.8605 - val_loss: 0.3774 - val_acc: 0.8319
+Epoch 16/30
+22960/22960 [==============================] - 20s 864us/step - loss: 0.3147 - acc: 0.8634 - val_loss: 0.3604 - val_acc: 0.8362
+Epoch 17/30
+22960/22960 [==============================] - 20s 860us/step - loss: 0.3100 - acc: 0.8671 - val_loss: 0.3498 - val_acc: 0.8452
+Epoch 18/30
+22960/22960 [==============================] - 20s 861us/step - loss: 0.3102 - acc: 0.8711 - val_loss: 0.3425 - val_acc: 0.8409
+Epoch 19/30
+22960/22960 [==============================] - 20s 854us/step - loss: 0.3015 - acc: 0.8686 - val_loss: 0.3504 - val_acc: 0.8342
+Epoch 20/30
+22960/22960 [==============================] - 20s 861us/step - loss: 0.3001 - acc: 0.8744 - val_loss: 0.3701 - val_acc: 0.8515
+Epoch 21/30
+22960/22960 [==============================] - 20s 864us/step - loss: 0.2942 - acc: 0.8766 - val_loss: 0.3343 - val_acc: 0.8480
+Epoch 22/30
+22960/22960 [==============================] - 20s 867us/step - loss: 0.2962 - acc: 0.8777 - val_loss: 0.3356 - val_acc: 0.8605
+Epoch 23/30
+22960/22960 [==============================] - 20s 879us/step - loss: 0.2926 - acc: 0.8747 - val_loss: 0.3648 - val_acc: 0.8632
+Epoch 24/30
+22960/22960 [==============================] - 20s 864us/step - loss: 0.2889 - acc: 0.8796 - val_loss: 0.3165 - val_acc: 0.8699
+Epoch 25/30
+22960/22960 [==============================] - 20s 863us/step - loss: 0.2825 - acc: 0.8829 - val_loss: 0.3291 - val_acc: 0.8695
+Epoch 26/30
+22960/22960 [==============================] - 20s 860us/step - loss: 0.2817 - acc: 0.8831 - val_loss: 0.3347 - val_acc: 0.8679
+Epoch 27/30
+22960/22960 [==============================] - 20s 865us/step - loss: 0.2818 - acc: 0.8841 - val_loss: 0.3283 - val_acc: 0.8770
+Epoch 28/30
+22960/22960 [==============================] - 20s 872us/step - loss: 0.2690 - acc: 0.8871 - val_loss: 0.3278 - val_acc: 0.8503
+Epoch 29/30
+22960/22960 [==============================] - 20s 871us/step - loss: 0.2765 - acc: 0.8851 - val_loss: 0.3465 - val_acc: 0.8405
+Epoch 30/30
+22960/22960 [==============================] - 20s 870us/step - loss: 0.2753 - acc: 0.8860 - val_loss: 0.3323 - val_acc: 0.8589
