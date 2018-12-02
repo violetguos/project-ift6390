@@ -1,5 +1,7 @@
 ###########Ignore specific project files###########
 *.wav
+*.pickle
+*.h5
 
 #########Latex############
 ## Core latex/pdflatex auxiliary files:
