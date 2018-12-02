@@ -51,6 +51,7 @@ def get_plot(prob_diffs, length, output_dir, filename_prefix):
 
 	plt.savefig(os.path.join(output_dir, '{}_plot.png'.format(filename_prefix)))
 
+
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Get a plot of which elements are most important in classification of an input file.')
 	parser.add_argument('feature_type', help='The type of feature of your input file. Can be mfcc, formants, or spectrogram.')
@@ -65,6 +66,8 @@ if __name__ == '__main__':
 		length = 1999
 	elif args.feature_type == 'formants':
 		length = 400
+	elif args.feature_type == 'spectrogram':
+		length = 201
 	else:
 		raise ValueError('Invalid feature type. Valid features types are: mfcc, formants, spectrogram.')
 
@@ -76,28 +79,35 @@ if __name__ == '__main__':
 
 	if not args.plotonly:
 		# Read the input file
-		with open(args.input_file, 'r') as fp:
-			lines = fp.readlines()
-		sequence = []
-		for line in lines:
-			point = line.split(',')
-			point = [float(x) for x in point]
-			sequence.append(point)
-		sequence = np.array(sequence)
+		DATA_PATH = './'
+		if args.input_file.split('.')[1] == "pickle":
+		    with open(os.path.join(DATA_PATH, "val_1_sec_hd_feature.pickle"), 'rb') as jar:
+		        sequence = pickle.load(jar)
+			sequence = np.array(sequence)
+		else:
+			with open(args.input_file, 'r') as fp:
+				lines = fp.readlines()
+			sequence = []
+			for line in lines:
+				point = line.split(',')
+				point = [float(x) for x in point]
+				sequence.append(point)
 
-		# Since the model was trained on a minibatch, we need to still
-		# respect that dimension, even though we're just going to predict one point.
-		expanded_sequence = np.expand_dims(sequence, axis=0)
 
+			# don't add dim to the spectrograms
+			# Since the model was trained on a minibatch, we need to still
+			# respect that dimension, even though we're just going to predict one point.
+			expanded_sequence = np.expand_dims(sequence, axis=0)
+		expanded_sequence = sequence
 		# Get the prob diffs
 		prob_diffs = get_prob_diffs(expanded_sequence, length, model)
-		with open(os.path.join(pickle_path, 'wb')) as jar:
+		with open(os.path.join(pickle_path), 'wb') as jar:
 			pickle.dump(prob_diffs, jar, protocol=pickle.HIGHEST_PROTOCOL)
 
 	else:
 		# Pull up the pickle
 		with open(pickle_path, 'rb') as jar:
   			prob_diffs = pickle.load(jar)
-		
+
 	# Get the plot
 	get_plot(prob_diffs, length, args.output_dir, filename_prefix)
