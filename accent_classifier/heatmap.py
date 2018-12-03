@@ -19,15 +19,18 @@ from vis.visualization import visualize_cam
 from vis.utils import utils
 from keras import activations
 
+import scipy.io.wavfile as wavfile
+from scipy.io.wavfile import read
+from scipy import signal
+import glob
+import copy
+import sys
 '''
 opening comment:
-Visualization of the gradients in CNN
-adapted from https://github.com/jacobgil/keras-grad-cam/blob/master/grad-cam.py
 
 we load a trained model in .h5 format, and pass an example image through the network
 to find the hidden layer weights visualizations
 
-The original implementation can ONLY work with keras pretrained VGG16
 
 The main function takes 1sec_hd pickles and loop through 20 of them,
 concatenate all the images
@@ -45,13 +48,12 @@ def concatIm(imArr):
 
 
     res = np.concatenate((imArr), axis = 1)
-    # if len(res.shape) == 3:
-    #     res = res.reshape(res.shape[1], res.shape[0], res.shape[2])
-    # else:
-    #     res = res.reshape(res.shape[1], res.shape[0])
+    if len(res.shape) == 3:
+        res = res.reshape(res.shape[1], res.shape[0], res.shape[2])
+    else:
+        res = res.reshape(res.shape[1], res.shape[0])
     print("res shape in concatIm", res.shape)
     return res
-
 
 def plotSave(imFinal,figName, output_dir):
     '''
@@ -60,15 +62,26 @@ def plotSave(imFinal,figName, output_dir):
     '''
 
     plt.figure()
-    if len(imFinal.shape) == 3:
-        plt.imshow( cv2.cvtColor(imFinal, cv2.COLOR_BGR2RGB), aspect="auto")
+    print("trying to plot original spec ", imFinal.shape)
+    if imFinal.shape[2] == 3:
+        prev_shape = imFinal.shape
+        imFinal -= np.min(imFinal)
+        imFinal = np.minimum(imFinal, 255)
+        imFinal = imFinal.reshape(prev_shape[1],prev_shape[0], 3)
+        plt.imshow(imFinal, origin='lower')
     else:
+        prev_shape = imFinal.shape
+        imFinal = imFinal.reshape(prev_shape[1],prev_shape[0])
+        # try to get the original plot to have more obvious colours
+        imFinal -= np.min(imFinal)
+        imFinal = np.minimum(imFinal, 255)
 
-        plt.imshow(imFinal, cmap = 'gray', aspect="auto")
+        plt.imshow(imFinal, cmap = plt.get_cmap('viridis'))
 
 
-    plt.imshow(imFinal, aspect="auto")
-    plt.xticks(np.arange(0, imFinal.shape[0], step=100))
+    #plt.xticks(np.arange(0, imFinal.shape[0], step=100))
+    plt.xticks(np.arange(0, imFinal.shape[0], step = 66), np.arange(0, 20))
+
     plt.xlabel('Time (ms)')
     plt.yticks([])
     plt.tight_layout()
@@ -76,40 +89,93 @@ def plotSave(imFinal,figName, output_dir):
     #plt.show()
 
 
+def wav_2_spec(file):
+    '''
+    taken from Jonathan's preprocessing
+    '''
+    os.chdir("./cnn_vis")
+    # will only plot the 1_0.wav in the dir
+    file_name = "1_0_20sec"
+    print("wav to spec", file_name)
+    x_value = 0
+    sr_value = 0
+    sr_value, x_value = read(file_name+".wav")
+    img = 0
+
+    spectrum, specs, t, img = plt.specgram(x_value, NFFT=400, Fs=16000,  noverlap=160)
+
+
+    plt.savefig("saved_spectrogram_20_sec_wav.png")
+    plt.clf()
+    #time.sleep(2)
+
+    plt.close()
+    spect_dict = {}
+    spect_dict['img'] = img
+    spect_dict['t'] = t
+    spect_dict['specs'] = specs
+    spect_dict['spectrum'] = spectrum
+    print("spectrum", spectrum.shape)
+    spectrum -= np.min(spectrum)
+    spectrum = np.minimum(spectrum, 255)
+
+
+    # plt.imshow(spectrum, cmap = plt.get_cmap('viridis'), origin='lower')
+    # plt.tight_layout()
+    # plt.xticks(np.arange(0, spectrum.shape[0], step = 66), np.arange(0, 20))
+    #
+    # plt.xlabel('Time (ms)')
+    # plt.yticks([])
+    # plt.savefig("saved_spectrum_1_0_20_sec_wav_cmap_normalized_flipped.png")
+    #
+    # #plt.show()
+    # #time.sleep(2)
+    #
+    # plt.clf()
+    # plt.close()
+    # back to the prevs
+    os.chdir("../")
+    return spectrum
+
 
 
 if __name__ == '__main__':
+    print("sys.argv", sys.argv)
+    if sys.argv[1] == 'plot':
+        print("in plot")
+        with open("heatmap_primitive_arr.pickle", 'rb') as jar:
+            heatmap = pickle.load(jar)
+    else:
 
-    DATA_PATH = "./"
+        DATA_PATH = "./cnn_vis/1_0_20sec.wav"
 
-    with open(os.path.join(DATA_PATH, "val_1_sec_hd_feature.pickle"), 'rb') as jar:
-        x_val = pickle.load(jar)
+        input_dir = "./cnn_vis/1sec_hd_pickle"
 
-    with open(os.path.join(DATA_PATH, "val_1_sec_hd_label.pickle"), 'rb') as jar:
-        y_val = pickle.load(jar)
+        os_list = os.listdir(input_dir)
+        final_test_data = []
+        for i, filename in enumerate(os_list):
+            with open(os.path.join(input_dir, filename), 'rb') as jar:
+                spect_dict = (pickle.load(jar))
+                data = spect_dict['spectrum']
+            final_test_data.append(data)
+        final_test_data = np.array(final_test_data)
+        print("final_test_data", final_test_data.shape)
 
-    print("Finished loading pickle")
-    print(x_val.shape)
-    print(y_val.shape)
+        MODEL_PATH = './'
+
+        model = keras.models.load_model(os.path.join(MODEL_PATH , 'val_acc_87_30_epoches.h5'))
+        layer_dict = dict([(layer.name, layer) for layer in model.layers])
+
+        print("The model layers dictionary: \n", layer_dict)
 
 
-    MODEL_PATH = './'
+        final_test_data = np.expand_dims(final_test_data, axis=3)
+        print("final_test_data", final_test_data.shape)
 
-    aggreCam = []
-    originalSpec = [] # plot the original spectrogram for reference
-    model = keras.models.load_model(os.path.join(MODEL_PATH , 'val_acc_87_30_epoches.h5'))
-    layer_dict = dict([(layer.name, layer) for layer in model.layers])
+        layers_arr = ['conv2d_38', 'conv2d_39', 'dropout_23'] #just plot the last convolution layer
+        for layerName in layers_arr:
+            aggreCam = []
 
-    print("The model layers dictionary: \n", layer_dict)
-
-    foo = 1
-    bar = 1
-    while foo: # will replace with iterating through brit and libris classes
-        foo = 0
-        while bar:
-            bar = 0
-        # for layerName, layerVal in layer_dict.items():
-            layerName = 'conv2d_39'
             for i in range(20):
                 # Utility to search for layer index by name.
                 # Alternatively we can specify this as -1 since it corresponds to the last layer.
@@ -123,17 +189,30 @@ if __name__ == '__main__':
                 filter_idx = 0
 
                 img = visualize_cam(model, layer_idx, filter_indices=[0],
-                 seed_input = x_val[i], penultimate_layer_idx = layer_idx - 1)
+                 seed_input = final_test_data[i], penultimate_layer_idx = layer_idx - 1)
 
-                #print("vis cam img", img.shape)
 
-                # img shape = (201, 66, 3)
-                # plt.imshow(img, cmap='jet')
-                # #plt.imshow(img[..., 0])
-                # figName = "multiclass_test2"
-                # plt.savefig('kerasvis_{}.png'.format(figName))
-                # plt.show()
                 aggreCam.append(img)
-            res = concatIm(aggreCam)
-            # works for a single plot
-            plotSave(res, "testpltLib_20sec_no_reshape", "./")
+
+            heatmap = concatIm(aggreCam)
+
+            # use the same 1_0.wav as the x_val to compare across CNN, RNN
+
+            spectrum = wav_2_spec(DATA_PATH)
+            print("spectrum", spectrum.shape)
+
+
+            plt.imshow(spectrum, origin='lower', cmap=plt.cm.gray)
+
+            print("heatmap shape", heatmap.shape)
+            heatmap = heatmap.reshape(heatmap.shape[1], heatmap.shape[0], heatmap.shape[2])
+            plt.imshow(heatmap, cmap=plt.cm.viridis, alpha=.6,  origin='lower')
+            plt.savefig("overlayed_{}_{}sec.png".format(layerName, i))
+            #plt.show()
+
+
+            # works for continuous plot but has issue with x axis shrinking
+            with open("heatmap_primitive_arr.pickle", 'wb') as jar:
+                pickle.dump(heatmap, jar, protocol=pickle.HIGHEST_PROTOCOL)
+
+            plotSave(heatmap, "cnn_filter_{}_{}sec_normalized_flipped".format(layerName, i), "./")
