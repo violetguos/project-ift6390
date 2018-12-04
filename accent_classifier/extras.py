@@ -7,6 +7,7 @@ import numpy as np
 import argparse
 import os
 import pickle
+import copy
 import matplotlib.pyplot as plt
 plt.style.use('ggplot')
 plt.rcParams['figure.figsize'] = 20,1.5
@@ -22,7 +23,7 @@ def get_prob_diffs(expanded_sequence, length, model):
 	prob_diffs = []
 
 	for i in range(0, length):
-		perturbed_sequence = expanded_sequence
+		perturbed_sequence = copy.deepcopy(expanded_sequence)
 		perturbed_sequence[0][i] += 0.5
 		new_probs = model.predict(perturbed_sequence)[0]
 		prob_diff = np.linalg.norm(base_probs - new_probs)
@@ -38,19 +39,26 @@ def get_plot(prob_diffs, length, output_dir, filename_prefix):
 	x = np.arange(length)
 	y = prob_diffs[:,1]
 	y = y.astype('float')
-	y[y == 0] = 0.1 	# To avoid taking the log of 0
-	y = np.power(-1 * np.log(y), -2) 	# To make values more contrastive
+	y[y == 0] = 0.001 	# To avoid taking the log of 0
+	y = -1 * np.log(y) 	# To make values more contrastive
+
+	if length == 1999:
+		plt.xticks(np.arange(0, length, step=100))
+	elif length == 400:
+		x = x * 5
+		plt.xticks(np.arange(0, 2000, step=100))
 
 	extent = [x[0]-(x[1]-x[0])/2., x[-1]+(x[1]-x[0])/2.,0,1]
 	plt.imshow(y[np.newaxis,:], cmap="viridis", aspect="auto", extent=extent)
-	plt.xticks(np.arange(0, length, step=100))
+
+	
 	plt.xlabel('Time (ms)')
 	plt.yticks([])
 	plt.xlim(extent[0], extent[1])
+	#plt.xticks(np.arange(0, 2000, step=100))
 	plt.tight_layout()
 
 	plt.savefig(os.path.join(output_dir, '{}_plot.png'.format(filename_prefix)))
-
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Get a plot of which elements are most important in classification of an input file.')
@@ -66,8 +74,6 @@ if __name__ == '__main__':
 		length = 1999
 	elif args.feature_type == 'formants':
 		length = 400
-	elif args.feature_type == 'spectrogram':
-		length = 201
 	else:
 		raise ValueError('Invalid feature type. Valid features types are: mfcc, formants, spectrogram.')
 
@@ -79,35 +85,28 @@ if __name__ == '__main__':
 
 	if not args.plotonly:
 		# Read the input file
-		DATA_PATH = './'
-		if args.input_file.split('.')[1] == "pickle":
-		    with open(os.path.join(DATA_PATH, "val_1_sec_hd_feature.pickle"), 'rb') as jar:
-		        sequence = pickle.load(jar)
-			sequence = np.array(sequence)
-		else:
-			with open(args.input_file, 'r') as fp:
-				lines = fp.readlines()
-			sequence = []
-			for line in lines:
-				point = line.split(',')
-				point = [float(x) for x in point]
-				sequence.append(point)
+		with open(args.input_file, 'r') as fp:
+			lines = fp.readlines()
+		sequence = []
+		for line in lines:
+			point = line.split(',')
+			point = [float(x) for x in point]
+			sequence.append(point)
+		sequence = np.array(sequence)
 
+		# Since the model was trained on a minibatch, we need to still
+		# respect that dimension, even though we're just going to predict one point.
+		expanded_sequence = np.expand_dims(sequence, axis=0)
 
-			# don't add dim to the spectrograms
-			# Since the model was trained on a minibatch, we need to still
-			# respect that dimension, even though we're just going to predict one point.
-			expanded_sequence = np.expand_dims(sequence, axis=0)
-		expanded_sequence = sequence
 		# Get the prob diffs
 		prob_diffs = get_prob_diffs(expanded_sequence, length, model)
-		with open(os.path.join(pickle_path), 'wb') as jar:
+		with open(pickle_path, 'wb') as jar:
 			pickle.dump(prob_diffs, jar, protocol=pickle.HIGHEST_PROTOCOL)
 
 	else:
 		# Pull up the pickle
 		with open(pickle_path, 'rb') as jar:
   			prob_diffs = pickle.load(jar)
-
+		
 	# Get the plot
 	get_plot(prob_diffs, length, args.output_dir, filename_prefix)

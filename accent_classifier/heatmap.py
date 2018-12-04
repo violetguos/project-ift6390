@@ -12,6 +12,7 @@ import os
 import pickle
 import keras
 import matplotlib.pyplot as plt
+plt.style.use('ggplot')
 
 from vis.visualization import visualize_activation
 
@@ -46,7 +47,6 @@ def concatIm(imArr):
     '''
     #res = np.ndarray(shape=(imArr[0][0].shape[1], len(imArr) *  imArr[0][0].shape[2], 3))
 
-
     res = np.concatenate((imArr), axis = 1)
     if len(res.shape) == 3:
         res = res.reshape(res.shape[1], res.shape[0], res.shape[2])
@@ -62,31 +62,18 @@ def plotSave(imFinal,figName, output_dir):
     '''
 
     plt.figure()
-    print("trying to plot original spec ", imFinal.shape)
-    if imFinal.shape[2] == 3:
-        prev_shape = imFinal.shape
-        imFinal -= np.min(imFinal)
-        imFinal = np.minimum(imFinal, 255)
-        imFinal = imFinal.reshape(prev_shape[1],prev_shape[0], 3)
-        plt.imshow(imFinal, origin='lower')
-    else:
-        prev_shape = imFinal.shape
-        imFinal = imFinal.reshape(prev_shape[1],prev_shape[0])
-        # try to get the original plot to have more obvious colours
-        imFinal -= np.min(imFinal)
-        imFinal = np.minimum(imFinal, 255)
 
-        plt.imshow(imFinal, cmap = plt.get_cmap('viridis'))
+    prev_shape = imFinal.shape
+    imFinal -= np.min(imFinal)
+    imFinal = np.minimum(imFinal, 255)
 
+    plt.imshow(imFinal, origin='lower', extent=[0,2000,0,500])
 
-    #plt.xticks(np.arange(0, imFinal.shape[0], step=100))
-    plt.xticks(np.arange(0, imFinal.shape[0], step = 66), np.arange(0, 20))
-
+    plt.xticks(np.arange(0, 2000, step=200))
     plt.xlabel('Time (ms)')
     plt.yticks([])
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, '{}.png'.format(figName)))
-    #plt.show()
 
 
 def wav_2_spec(file):
@@ -104,7 +91,6 @@ def wav_2_spec(file):
 
     spectrum, specs, t, img = plt.specgram(x_value, NFFT=400, Fs=16000,  noverlap=160)
 
-
     plt.savefig("saved_spectrogram_20_sec_wav.png")
     plt.clf()
     #time.sleep(2)
@@ -118,7 +104,6 @@ def wav_2_spec(file):
     print("spectrum", spectrum.shape)
     spectrum -= np.min(spectrum)
     spectrum = np.minimum(spectrum, 255)
-
 
     # plt.imshow(spectrum, cmap = plt.get_cmap('viridis'), origin='lower')
     # plt.tight_layout()
@@ -140,11 +125,14 @@ def wav_2_spec(file):
 
 
 if __name__ == '__main__':
-    print("sys.argv", sys.argv)
+    # Supply the 'plot' keyword at the command line to bypass the actual
+    # generation (need to hard code the data pickle, though.)
     if sys.argv[1] == 'plot':
-        print("in plot")
         with open("heatmap_primitive_arr.pickle", 'rb') as jar:
             heatmap = pickle.load(jar)
+        plotSave(heatmap, "cnn_filter_sec_normalized_flipped", "./")
+
+    # Otherwise generate the weight viz, and plot it
     else:
 
         DATA_PATH = "./cnn_vis/1_0_20sec.wav"
