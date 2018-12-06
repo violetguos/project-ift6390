@@ -2,6 +2,9 @@
 *.wav
 *.pickle
 *.h5
+*.png
+*.npz
+*.1sec_hdpickle
 
 #########Latex############
 ## Core latex/pdflatex auxiliary files:
