@@ -9,3 +9,7 @@
 # ['pickle' : re-pickle all the spectrogram for train and test]
 # ['test': test loading pickle and verify shapes]
 # ['plot': plot spectrogram in the freqeuncy scale]
+
+
+# after training and saving the .h5 model, run
+# python heatmap.py [name.h5]

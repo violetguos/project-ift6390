@@ -61,14 +61,6 @@ def plotSave(imFinal,figName, output_dir):
     save it into a bigger plot
     '''
 
-<<<<<<< Updated upstream
-=======
-    '''
-    after aggregating all 1 sec segments
-    save it into a bigger plot
-    '''
-
->>>>>>> Stashed changes
     plt.figure()
 
     prev_shape = imFinal.shape
@@ -82,10 +74,6 @@ def plotSave(imFinal,figName, output_dir):
     plt.yticks([])
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, '{}.png'.format(figName)))
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
 
 
 def wav_2_spec(file):
@@ -137,23 +125,16 @@ def wav_2_spec(file):
 
 
 if __name__ == '__main__':
-<<<<<<< Updated upstream
     # Supply the 'plot' keyword at the command line to bypass the actual
     # generation (need to hard code the data pickle, though.)
-=======
+
     #print("sys.argv", sys.argv)
->>>>>>> Stashed changes
     if sys.argv[1] == 'plot':
         with open("heatmap_primitive_arr.pickle", 'rb') as jar:
             heatmap = pickle.load(jar)
-<<<<<<< Updated upstream
-        plotSave(heatmap, "cnn_filter_sec_normalized_flipped", "./")
+        plotSave(heatmap, "cnn_filter_19sec_normalized_flipped", "./")
 
-    # Otherwise generate the weight viz, and plot it
-=======
-        plotSave(heatmap, "cnn_filter_19_sec_normalized_flipped", "./")
 
->>>>>>> Stashed changes
     else:
 
         DATA_PATH = "./cnn_vis/1_0_20sec.wav"
@@ -171,8 +152,8 @@ if __name__ == '__main__':
         print("final_test_data", final_test_data.shape)
 
         MODEL_PATH = './'
-
-        model = keras.models.load_model(os.path.join(MODEL_PATH , 'specto_hd_cnn_yvg_test_1sec_90_acc.h5'))
+        model_name = sys.argv[1]
+        model = keras.models.load_model(os.path.join(MODEL_PATH , model_name))
         layer_dict = dict([(layer.name, layer) for layer in model.layers])
 
         print("The model layers dictionary: \n", layer_dict)
