@@ -77,7 +77,7 @@ def extract_spectrogram(input_dir, output_dir):
 			img = 0
 
 			# Get the spectrogram
-			spectrum, specs, t, img = plt.specgram(x_value, NFFT=80, Fs=16000, noverlap=40)
+			spectrum, specs, t, img = plt.specgram(x_value,  NFFT=400, Fs=16000, noverlap=160)
 			plt.clf() # Clear plot - this is necessary!
 
 			# Dump to a dictionary

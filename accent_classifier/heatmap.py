@@ -162,7 +162,7 @@ if __name__ == '__main__':
         final_test_data = np.expand_dims(final_test_data, axis=3)
         print("final_test_data", final_test_data.shape)
 
-        layers_arr = ['conv2d_9'] #just plot the last convolution layer
+        layers_arr = ['conv2d_10', 'conv2d_11', 'conv2d_12'] #just plot the last convolution layer
         for layerName in layers_arr:
             aggreCam = []
 

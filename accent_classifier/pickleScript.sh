@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+
+
+
+
 # to re-slice the original audio into small time segments
 # run python timeSlicePickle.py [copora name: 'librispeech' or 'librit']  \
 # [clip_length: in terms of seconds]
@@ -12,4 +16,4 @@
 
 
 # after training and saving the .h5 model, run
-# python heatmap.py [name.h5]
+# python heatmap.py specto_hd_cnn_hyperTuned.h5

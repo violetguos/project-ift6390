@@ -203,7 +203,7 @@ def extract_spectrogram(input_dir, output_dir):
             spect_dict['t'] = t
             spect_dict['specs'] = specs
             spect_dict['spectrum'] = spectrum
-            with open(os.path.join(output_dir, '{}.167sec_hdpickle'.format(filename_prefix)), "wb" ) as jar:
+            with open(os.path.join(output_dir, '{}.1sec_hdpickle'.format(filename_prefix)), "wb" ) as jar:
                 pickle.dump(spect_dict ,jar,protocol=pickle.HIGHEST_PROTOCOL)
 
 
