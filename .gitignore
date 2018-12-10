@@ -1,7 +1,7 @@
 ###########Ignore specific project files###########
 *.wav
 *.pickle
-*.h5
+#*.h5
 *.png
 *.npz
 *.1sec_hdpickle
