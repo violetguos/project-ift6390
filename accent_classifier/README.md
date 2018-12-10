@@ -66,7 +66,8 @@ Our data files are impossible to upload, therefore we will supply data upon requ
   *  `specto_hd_cnn_hyperTuned.h5`: the saved weights of the final CNN model
   * `spectrogram_svm.ipynb`: SVM and MF dummy classifier baselines.
 
-* `supplementaryMaterial`: this contains the 20 second British Audio file. In our report, we have specified that our NNs learned the following:
+* `supplementaryMaterial`:
+  * this contains the 20 second British Audio file. In our report, we have specified that our NNs learned the following:
 
 | Phoneme | Word of the phoneme | Time Window in Audio (seconds) |
 | :-----: | :-----------------: | :----------------------------: |
@@ -74,7 +75,8 @@ Our data files are impossible to upload, therefore we will supply data upon requ
 |   **or**      |      **or**g      |         10:86 to 11:39         |
 |    **eu**     |   *F**eu**erbach*   |         17:65 to 18:41         |
 
-You may play the audio `1_0_20sec.wav` using any open source or commercial audio player to skip to the following timestamps and verify our results.
+  * You may play the audio `1_0_20sec.wav` using any open source or commercial audio player to skip to the following timestamps and verify our results.
+    * Each image file (of NN weights visualization) is available at higher resolution than that of the report for further inspection.
 
 * `postprocessing/`: used to visualize our RNN weights.
   * `extras.py` includes our original implementation of the RNN visualization.  Functions to get a plot of which elements are most important in the NN's decision. Used in RNN feature map analysis section of the report.
@@ -91,3 +93,6 @@ You may play the audio `1_0_20sec.wav` using any open source or commercial audio
   * `spectrogramPickle.py`: final pickle pulls the 'spectrum' key of all
  the `.1sec_hdpickles` and aggregates them
   * `Wav_2_Spectrogram.ipynb`: experiment with spectrogram
+
+* `models/`:
+  * saved `.h5` models from 3 of our neural network implementations
