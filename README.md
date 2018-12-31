@@ -1,16 +1,6 @@
 
 # IFT6390 Final Project: Speaker Accent Classification with Deep Learning
 
-Team members:
-
-* Jonathan Bhimani-Burrows (20138260)
-* Khalil Bibi (20113693)
-* Arlie Coles (20121051)
-* Akila Jeeson Daniel (20140681)
-* Y. Violet Guo (20120727)
-* Louis-François Préville-Ratelle (708048)
-
-
 ## File structure for submission
 
 
@@ -39,12 +29,12 @@ You can play the audio  using any open source or commercial audio player to skip
 
 First, clone the repository:
 ```
-git clone https://github.com/violetguos/project-ift6390.git 
+git clone https://github.com/violetguos/project-ift6390.git
 cd project-ift6390
 ```
 
 We recommend running any code in a virtual environment. This allows for easy installation of dependencies:
- 
+
   ```
   sudo pip install virtualenv      # This may already be installed
   virtualenv .env                  # Create a virtual environment
