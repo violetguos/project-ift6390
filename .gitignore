@@ -6,6 +6,9 @@
 *.npz
 *.1sec_hdpickle
 
+########### include the specific audio files#######
+!1_0_20sec.wav
+
 #########Latex############
 ## Core latex/pdflatex auxiliary files:
 *.aux
